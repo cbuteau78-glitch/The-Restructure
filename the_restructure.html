@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Restructure</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0908;--bg2:#131210;--bg3:#1c1a17;
+  --gold:#c8a45e;--gdim:#c8a45e40;--gmute:#c8a45e18;
+  --text:#e0d7c6;--dim:#8a8070;--faint:#4a4438;
+  --border:#252220;--brite:#302c28;
+  --green:#5cb88a;--red:#c87878;--blue:#78a8cc;
+  --purple:#a878cc;--orange:#cca878;--teal:#78cccc;--yellow:#cccc78;
+}
+body{background:var(--bg);color:var(--text);font-family:Georgia,'Times New Roman',serif;line-height:1.75;font-size:16px;font-weight:300}
+#hdr{position:sticky;top:0;z-index:200;background:var(--bg);border-bottom:1px solid var(--border);height:52px;display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+#hdr-brand{font-family:monospace;font-size:.68rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+#day-pill{font-family:monospace;font-size:.7rem;color:var(--gold);background:var(--gmute);border:1px solid var(--gdim);padding:3px 12px;border-radius:20px}
+#hdr-btns{display:flex;gap:8px}
+.hbtn{background:transparent;border:1px solid var(--brite);color:var(--dim);padding:5px 12px;border-radius:4px;cursor:pointer;font-size:.72rem;font-family:monospace;letter-spacing:.04em;transition:all .15s}
+.hbtn:hover{border-color:var(--gold);color:var(--gold)}
+#prog-track{height:2px;background:var(--border);position:fixed;top:52px;left:0;right:0;z-index:199}
+#prog-fill{height:100%;background:var(--gold);transition:width .5s ease;width:7%}
+#main{max-width:700px;margin:0 auto;padding:48px 24px 90px;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.p-lbl{font-family:monospace;font-size:.66rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.p-ttl{font-family:Georgia,serif;font-size:1.65rem;font-weight:600;color:var(--text);line-height:1.25;margin-bottom:6px}
+.p-sub{font-size:.86rem;color:var(--dim);font-style:italic;margin-bottom:32px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.scene{color:var(--dim);font-style:italic;font-size:.9rem;line-height:1.8;margin-bottom:24px}
+.dlg{margin:20px 0}
+.dl{display:flex;flex-direction:column;margin-bottom:18px}
+.spk{font-family:monospace;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:3px;display:inline-block;margin-bottom:5px;align-self:flex-start}
+.s-you{background:#1a3a2a;color:#7fc8a0}
+.s-alex{background:#1a2a3a;color:var(--blue)}
+.s-marcus{background:#3a1a1a;color:var(--red)}
+.s-sarah{background:#2a1a3a;color:var(--purple)}
+.s-james{background:#3a2a1a;color:var(--orange)}
+.s-priya{background:#1a3a3a;color:var(--teal)}
+.s-david{background:#2a2a1a;color:var(--yellow)}
+.s-maya{background:#3a1a3a;color:#cc78cc}
+.dt{color:var(--text);font-size:.97rem;line-height:1.72}
+.dt em{color:var(--dim);font-style:italic}
+.fb{background:var(--bg2);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:18px 22px;margin:24px 0}
+.fb-h{font-family:monospace;font-size:.65rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+.fb p{color:#bbb;font-size:.88rem;margin-bottom:7px;line-height:1.62}
+.fb p:last-child{margin-bottom:0}
+.fb strong{color:var(--gold)}
+.ru{background:#0a130d;border:1px solid #1a3520;border-radius:5px;padding:12px 16px;margin:14px 0}
+.ri{font-family:monospace;font-size:.76rem;color:#7aba8a;margin-bottom:5px;line-height:1.45}
+.ri:last-child{margin-bottom:0}
+.cpmt{color:var(--gold);font-style:italic;font-size:1rem;margin:24px 0 16px}
+#choices{margin-top:32px;display:flex;flex-direction:column;gap:9px}
+.cbtn{background:var(--bg2);border:1px solid var(--brite);color:var(--dim);padding:14px 20px;border-radius:5px;cursor:pointer;text-align:left;font-size:.91rem;font-family:Georgia,serif;line-height:1.5;transition:all .15s;position:relative}
+.cbtn::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gold);border-radius:3px 0 0 3px;opacity:0;transition:opacity .15s}
+.cbtn:hover{border-color:var(--gdim);color:var(--text);background:var(--bg3);transform:translateX(3px)}
+.cbtn:hover::before{opacity:1}
+.slack{background:#111220;border:1px solid #252535;border-radius:7px;padding:14px 18px;margin:18px 0}
+.slack-h{font-family:monospace;color:var(--faint);font-size:.7rem;letter-spacing:.07em;margin-bottom:8px}
+.slack p{color:var(--text);font-size:.9rem;line-height:1.6}
+.title-wrap{text-align:center;padding:28px 0}
+.t-big{font-family:Georgia,serif;font-size:3rem;font-weight:600;letter-spacing:.04em;color:var(--text);margin-bottom:6px;line-height:1.1}
+.t-sub{font-family:monospace;font-size:.68rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:28px}
+.t-desc{color:var(--dim);max-width:500px;margin:0 auto 12px;font-size:.93rem;line-height:1.78}
+.t-div{width:50px;height:1px;background:var(--gdim);margin:24px auto}
+.t-credit{color:var(--faint);font-family:monospace;font-size:.67rem;letter-spacing:.07em;margin-top:28px}
+.fwd h3{font-family:monospace;font-size:.68rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin:28px 0 12px}
+.fwd h3:first-child{margin-top:0}
+.fwd p{color:#bbb;margin-bottom:13px;line-height:1.82;font-size:.93rem}
+.fwd strong{color:var(--gold)}
+.fwd ul{margin:8px 0 13px 20px}
+.fwd li{color:#bbb;margin-bottom:7px;font-size:.91rem;line-height:1.6}
+.ai-box{background:var(--bg2);border:1px solid var(--brite);border-radius:5px;padding:16px 20px;margin-top:20px}
+.ai-box p{font-size:.83rem!important;color:var(--dim)!important}
+.tk-intro{color:var(--dim);font-style:italic;font-size:.91rem;line-height:1.78;margin-bottom:24px}
+.tk-sec{margin-bottom:22px;border-radius:7px;overflow:hidden;border:1px solid var(--brite)}
+.tk-hd{font-family:monospace;font-size:.67rem;letter-spacing:.18em;text-transform:uppercase;padding:10px 18px;background:var(--bg3)}
+.tk-hard .tk-hd{color:var(--red);border-bottom:1px solid #3a1818}
+.tk-smart .tk-hd{color:var(--blue);border-bottom:1px solid #18183a}
+.tk-soft .tk-hd{color:var(--green);border-bottom:1px solid #183a18}
+.tk-item{padding:14px 18px;border-bottom:1px solid var(--border)}
+.tk-item:last-child{border-bottom:none}
+.tk-nm{font-family:monospace;font-size:.75rem;letter-spacing:.09em;color:#e8d4a0;margin-bottom:5px}
+.tk-def{color:var(--dim);font-style:italic;font-size:.85rem;margin-bottom:7px;line-height:1.55}
+.tk-ex{background:var(--bg);border-radius:4px;padding:9px 13px;font-size:.82rem;color:#aaa;line-height:1.58}
+.tk-ex strong{color:#777;font-size:.78rem}
+.tk-gap{font-family:monospace;font-size:.7rem;color:var(--green);margin-top:5px}
+.tk-warn{font-family:monospace;font-size:.7rem;color:var(--red);margin-top:5px}
+.ending-wrap{padding:6px 0}
+.e-badge{font-family:monospace;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;padding:5px 14px;border-radius:20px;display:inline-block;margin-bottom:18px}
+.ea .e-badge{background:#1a3a2a;color:var(--green)}
+.eb .e-badge{background:#1a2a3a;color:var(--blue)}
+.ec .e-badge{background:#3a2a1a;color:var(--orange)}
+.ed .e-badge{background:#3a1a1a;color:var(--red)}
+.e-ttl{font-family:Georgia,serif;font-size:1.9rem;font-weight:600;margin-bottom:7px;line-height:1.2}
+.ea .e-ttl{color:var(--green)}.eb .e-ttl{color:var(--blue)}.ec .e-ttl{color:var(--orange)}.ed .e-ttl{color:var(--red)}
+.e-sub{color:var(--dim);font-style:italic;font-size:.88rem;margin-bottom:28px;padding-bottom:18px;border-bottom:1px solid var(--border)}
+.e-body p{color:#bbb;margin-bottom:13px;font-size:.93rem;line-height:1.78}
+.coal-rpt{background:var(--bg2);border:1px solid var(--brite);border-radius:7px;padding:20px;margin:22px 0}
+.cr-ttl{font-family:monospace;font-size:.65rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);margin-bottom:16px}
+.cr-row{display:flex;align-items:center;gap:12px;margin-bottom:11px}
+.cr-row:last-child{margin-bottom:0}
+.cr-name{font-family:monospace;font-size:.78rem;color:#e8d4a0;min-width:96px}
+.cr-bg{flex:1;background:var(--bg3);height:6px;border-radius:3px}
+.cr-fill{height:100%;border-radius:3px;transition:width .7s ease}
+.cr-l1 .cr-fill{width:33%;background:#5a2a2a}
+.cr-l2 .cr-fill{width:66%;background:var(--gold)}
+.cr-l3 .cr-fill{width:100%;background:var(--green)}
+.cr-lbl{font-family:monospace;font-size:.68rem;min-width:88px;text-align:right}
+.cr-l1 .cr-lbl{color:var(--red)}.cr-l2 .cr-lbl{color:var(--gold)}.cr-l3 .cr-lbl{color:var(--green)}
+.debrief{background:#0a130d;border:1px solid #1a3520;border-radius:7px;padding:20px;margin:22px 0}
+.deb-ttl{font-family:monospace;font-size:.65rem;letter-spacing:.16em;color:var(--green);text-transform:uppercase;margin-bottom:12px}
+.debrief p{color:#8aba8a;font-size:.86rem;line-height:1.65;margin-bottom:9px}
+.debrief p:last-child{margin-bottom:0}
+.rst-area{text-align:center;margin-top:44px;padding-top:28px;border-top:1px solid var(--border)}
+.rst-area p{color:var(--faint);font-size:.83rem;margin-bottom:14px;font-style:italic}
+.rbtn{background:transparent;border:1px solid var(--gdim);color:var(--gold);padding:10px 26px;border-radius:5px;cursor:pointer;font-family:monospace;font-size:.76rem;letter-spacing:.1em;text-transform:uppercase;transition:all .15s}
+.rbtn:hover{background:var(--gold);color:#000}
+.modal-ov{display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:500;overflow-y:auto;padding:36px 18px;align-items:flex-start;justify-content:center}
+.modal-ov.open{display:flex}
+.modal-box{background:var(--bg);border:1px solid var(--brite);border-radius:9px;max-width:660px;width:100%;padding:28px;position:relative}
+.m-close{position:absolute;top:13px;right:13px;background:transparent;border:1px solid var(--brite);color:var(--dim);width:28px;height:28px;border-radius:4px;cursor:pointer;font-size:.85rem;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.m-close:hover{border-color:var(--gold);color:var(--gold)}
+.m-ttl{font-family:monospace;font-size:.68rem;letter-spacing:.18em;color:var(--gold);text-transform:uppercase;margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.rt-row{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.rt-row:last-child{margin-bottom:0}
+.rt-name{font-family:monospace;font-size:.78rem;color:#e8d4a0;min-width:106px}
+.rt-bg{flex:1;background:var(--bg3);height:7px;border-radius:3px}
+.rt-fill{height:100%;border-radius:3px;transition:width .5s ease}
+.rt-l1 .rt-fill{width:33%;background:#5a2a2a}
+.rt-l2 .rt-fill{width:66%;background:var(--gold)}
+.rt-l3 .rt-fill{width:100%;background:var(--green)}
+.rt-lbl{font-family:monospace;font-size:.68rem;min-width:88px;text-align:right}
+.rt-l1 .rt-lbl{color:var(--red)}.rt-l2 .rt-lbl{color:var(--gold)}.rt-l3 .rt-lbl{color:var(--green)}
+</style>
+</head>
+<body>
+<div id="hdr">
+  <div id="hdr-brand">The Restructure</div>
+  <div id="day-pill">Day 1 of 14</div>
+  <div id="hdr-btns">
+    <button class="hbtn" onclick="openModal('tk-modal')">Leverage Toolkit</button>
+    <button class="hbtn" onclick="openModal('rel-modal')">Relationships</button>
+  </div>
+</div>
+<div id="prog-track"><div id="prog-fill"></div></div>
+<div id="main">
+  <div id="p-lbl" class="p-lbl"></div>
+  <div id="p-ttl" class="p-ttl"></div>
+  <div id="p-sub" class="p-sub"></div>
+  <div id="p-content"></div>
+  <div id="choices"></div>
+</div>
+
+<div id="tk-modal" class="modal-ov">
+<div class="modal-box">
+<button class="m-close" onclick="closeModal('tk-modal')">x</button>
+<div class="m-ttl">Leverage Toolkit - 12 Forms of Influence</div>
+<p class="tk-intro">Influence is not a single tool. It is a toolkit. Notice which forms you reach for naturally - and which you avoid. Your gaps are your growth edges.</p>
+<div class="tk-sec tk-hard"><div class="tk-hd">Hard Power</div>
+<div class="tk-item"><div class="tk-nm">1. MIGHT</div><div class="tk-def">Using authority or consequences to compel action.</div><div class="tk-ex"><strong>Workplace:</strong> Setting hard deadlines, exercising formal authority. Effective for compliance, not internalization. Use minimum necessary - power invokes resistance.<br><span class="tk-warn">Overuse erodes trust and triggers reactance.</span></div></div>
+<div class="tk-item"><div class="tk-nm">2. ETHOS</div><div class="tk-def">Credibility from expertise, track record, and character.</div><div class="tk-ex"><strong>Workplace:</strong> "I restructured three orgs like this. Here is what worked." Your background is currency - spend it deliberately.<br><span class="tk-warn">Claimed but undemonstrated ethos backfires.</span></div></div>
+</div>
+<div class="tk-sec tk-smart"><div class="tk-hd">Smart Power</div>
+<div class="tk-item"><div class="tk-nm">3. LOGOS</div><div class="tk-def">Logical argument, data, evidence.</div><div class="tk-ex"><strong>Workplace:</strong> "Shipping speed increased 40% at comparable companies." Works with analytical people. Insufficient alone for relationship-driven people.</div></div>
+<div class="tk-item"><div class="tk-nm">4. SITUATION AWARENESS</div><div class="tk-def">Reading who matters, what is unsaid, what is actually happening.</div><div class="tk-ex"><strong>Workplace:</strong> Noticing the real decision-maker is not in the room. Understanding why someone resists before they tell you.</div></div>
+<div class="tk-item"><div class="tk-nm">5. INTENTIONALITY</div><div class="tk-def">Being deliberate and strategic - not leaving things to chance.</div><div class="tk-ex"><strong>Workplace:</strong> Planning which conversations to have before a big meeting. Designing relationship-building, not assuming it happens.</div></div>
+<div class="tk-item"><div class="tk-nm">6. COALITIONS</div><div class="tk-def">Building alliances across groups for coordinated influence.</div><div class="tk-ex"><strong>Workplace:</strong> You do not need everyone. You need the right people. Three department heads aligned beats ten peers who agree with you.<br><span class="tk-gap">Your growth area - Leverage Inventory: 3.0/4.0</span></div></div>
+<div class="tk-item"><div class="tk-nm">7. EXCHANGE</div><div class="tk-def">Negotiating, trading value, making explicit offers.</div><div class="tk-ex"><strong>Workplace:</strong> "I will help with your Q3 analysis if you support this initiative tomorrow." Transactional but powerful. Some people respond to nothing else.<br><span class="tk-gap">Your growth area - Leverage Inventory: 2.67/4.0</span></div></div>
+<div class="tk-item"><div class="tk-nm">8. AGENCY</div><div class="tk-def">Taking initiative. Making things happen without waiting for permission.</div><div class="tk-ex"><strong>Workplace:</strong> Solving a problem before being asked. Volunteering for the hard assignment. Shows leadership before the title.</div></div>
+</div>
+<div class="tk-sec tk-soft"><div class="tk-hd">Soft Power</div>
+<div class="tk-item"><div class="tk-nm">9. PATHOS</div><div class="tk-def">Emotional appeals - connecting to what people feel and care about.</div><div class="tk-ex"><strong>Workplace:</strong> "This matters because it affects people's ability to do meaningful work." Your strongest natural tool. Not everyone responds to emotion.<br><span class="tk-gap">Natural strength - Leverage Inventory: 3.67/4.0</span></div></div>
+<div class="tk-item"><div class="tk-nm">10. ALLOCENTRISM</div><div class="tk-def">Genuine interest in others - their perspective, needs, and goals.</div><div class="tk-ex"><strong>Workplace:</strong> Asking Marcus what he actually cares about before pitching him anything. Designing around real needs, not stated positions.<br><span class="tk-gap">Natural strength - Leverage Inventory: 3.67/4.0</span></div></div>
+<div class="tk-item"><div class="tk-nm">11. NETWORKS</div><div class="tk-def">Building and leveraging relationships across different groups.</div><div class="tk-ex"><strong>Workplace:</strong> Knowing who bridges departments informally. Identifying structural holes - who connects what would otherwise be disconnected.</div></div>
+<div class="tk-item"><div class="tk-nm">12. TEAM-BUILDING</div><div class="tk-def">Deliberately cultivating relationships one by one, over time, with consistency.</div><div class="tk-ex"><strong>Workplace:</strong> Scheduling individual coffee chats. Following up. Remembering what people mentioned. This is not networking - it is relationship maintenance.<br><span class="tk-gap">Your growth area - Leverage Inventory: 2.4/4.0</span></div></div>
+</div>
+</div></div>
+
+<div id="rel-modal" class="modal-ov">
+<div class="modal-box">
+<button class="m-close" onclick="closeModal('rel-modal')">x</button>
+<div class="m-ttl">Relationship Tracker</div>
+<div id="rel-content"></div>
+</div></div>
+
+<script>
+const S={marcus:1,sarah:1,james:1,priya:1,david:1,marcusPath:'open',currentDay:1};
+let curId='start';
+
+const P={};
+
+P.start={lbl:'MGT428 - Final Project',ttl:'The Restructure',sub:'A Choose-Your-Own-Adventure in Organizational Influence',day:null,
+content:()=>`<div class="title-wrap">
+<div class="t-big">The Restructure</div>
+<div class="t-sub">A 14-Day Simulation in Organizational Influence</div>
+<div class="t-div"></div>
+<p class="t-desc">You are an interim consultant. Two weeks. One proposal. A company that may or may not be ready to hear it. Every conversation compounds. By Day 14, you will see what you built - and whether it was enough.</p>
+<p class="t-desc" style="font-size:.84rem;color:var(--faint)">Use <strong style="color:var(--gold)">Leverage Toolkit</strong> to reference the 12 forms of influence. Use <strong style="color:var(--gold)">Relationships</strong> to track your coalition in real time.</p>
+<div class="t-credit">Caitie Buteau &middot; MGT428 Managerial Decision Making &middot; Rady MBA 2027<br>Prof. Rottenstreich &middot; Make It Your Own - Final Project</div>
+</div>`,
+choices:[{t:'Read the Forward',n:'forward'},{t:'Begin Story - Day 1',n:'day1_alex'}]};
+
+P.forward={lbl:'Prefatory Note',ttl:'Forward',sub:'Why this story exists - and why it changed form',day:null,
+content:()=>`<div class="fwd">
+<h3>A Note on Intent</h3>
+<p>This project was designed to be a fully playable Bitsy pixel-art game - a 14-day workplace simulation with dynamic NPC profiles, a meeting calendar, email subtext, and AI rivals competing for the same coalition. Two things stopped that: a hand injury (I cut my hand whittling) and an honest reckoning with scope. A polished game takes months. What you are reading is the proof-of-concept - same storyboard, same branching logic, same influence mechanics. No pixel art, no gameplay engine. The blueprint of a game rendered as interactive fiction.</p>
+<h3>Why This Concept</h3>
+<p>My Leverage Inventory revealed three critical gaps: <strong>Team-building (2.4/4.0)</strong>, <strong>Exchange (2.67/4.0)</strong>, and <strong>Coalitions (3.0/4.0)</strong>. I score high in Pathos and Allocentrism - I connect emotionally and genuinely care about people. What I do not do is systematically invest in relationships over time. I assume good intent will carry momentum. In real organizations, that assumption is expensive.</p>
+<p>Part 2 of this course showed me why. Networks are not built on charisma alone - structure matters (Granovetter). Coalitions require deliberate cultivation (Pfeffer). Fairness in process matters more than individual connections (Brockner). Change resistance is predictable once you understand loss aversion and autonomy concerns.</p>
+<h3>Why a Game</h3>
+<p>An essay tells you about influence. A game makes you practice it. In a simulation, you feel the consequence of the wrong tactic with the wrong person. You feel what it is like to build a coalition - or fail to. That experience is what changes future behavior, not information alone. Made to Stick.</p>
+<p>I chose a squad restructure scenario because it forces every one of my weak leverage areas: coalition-building across departments, explicit Exchange negotiations, deliberate one-by-one team-building. You cannot win this with Pathos alone.</p>
+<h3>What to Watch As You Read</h3>
+<ul>
+<li>Which NPCs respond to emotion vs. data vs. autonomy preservation</li>
+<li>How early choices close or open later options</li>
+<li>Whether you can win with the wrong coalition composition</li>
+<li>The difference between someone who says yes and someone who fights for you</li>
+</ul>
+<div class="ai-box"><h3 style="margin-top:0;font-family:monospace;font-size:.68rem;letter-spacing:.18em;color:var(--gold)">AI DISCLOSURE</h3>
+<p>This story was designed and outlined in collaboration with Claude (Anthropic, Sonnet 4.6). Claude helped structure the narrative architecture, develop NPC profiles, map influence concepts to story mechanics, and generate dialogue scaffolding. All final writing, character voice, choice architecture, and learning objectives reflect my own thinking and direction. Due to a hand injury sustained while whittling, I used Claude as a collaborative design tool under my direction - not as a substitute for intellectual engagement. The game concept, leverage integration, and personal reflection are entirely my own.</p>
+</div></div>`,
+choices:[{t:'Begin Story - Day 1',n:'day1_alex'},{t:'Back to Title',n:'start'}]};
+
+P.day1_alex={lbl:'Day 1 - Monday Morning',ttl:'Arrival',sub:"Alex's office, 9 AM - your entry point into the company",day:1,
+content:()=>`
+<p class="scene">The office is open-plan and loud with the productive energy of a company that believes it is winning. Alex Chen, Chief Product Officer, waves you in. She brought you here. She is your sponsor and your only known ally on Day 1.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-alex">ALEX</span><span class="dt">"You made it. Short version: we ship too slowly. Product, engineering, sales, ops, finance - all functional silos. Nobody owns an outcome. I need you to propose a restructure. Cross-functional squads. I cannot be the one pushing it - I am too embedded. You are external and credible. Use that."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Who matters?"</span></div>
+<div class="dl"><span class="spk s-alex">ALEX</span><span class="dt">"Marcus Reid, VP Engineering - built our technical foundation, protective, sees change as loss of control. Sarah Morales, Head of Ops - has been pushing for structural change for two years, obvious ally but fragile: credit her or lose her. James Kim, Head of Sales - territorial, worried he loses influence over product. David Torres, Finance right-hand - data-driven, wants a transition plan before he says yes. And Priya Gupta, senior engineer - no formal power but engineering listens to her. If you want technical buy-in, you need Priya."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"And Maya?"</span></div>
+<div class="dl"><span class="spk s-alex">ALEX</span><span class="dt">"Maya Wong, CEO. Stretched thin. She will listen to whoever brings a coherent argument backed by the people who matter. Right now nobody has brought her that argument. Two weeks."</span></div>
+</div>`,
+choices:[{t:'Continue to the team standup',n:'day1_choice'}]};
+
+P.day1_choice={lbl:'Day 1 - Monday Morning',ttl:'The First Introduction',sub:'The team gathers for standup. Someone asks who you are.',day:1,
+content:()=>`
+<p class="scene">10 AM. Kitchen standup. Coffee in hand. Alex introduces you. Eyes turn. Marcus crosses his arms. Sarah leans forward. Priya watches from the edge. James is on his phone but he is listening. This is your first impression with everyone at once.</p>
+<p class="cpmt">How do you introduce yourself?</p>`,
+choices:[
+{t:'A)  Authority: "I am here to fix how you are organized. We need to move faster."',n:'day1_a',a:()=>{S.marcusPath='defensive'}},
+{t:'B)  Collaborative: "I am here to understand your challenges and co-create solutions."',n:'day1_b',a:()=>{S.marcusPath='open'}},
+{t:'C)  Data: "I have seen this pattern before. Here is what the data says about functional orgs at your stage."',n:'day1_c',a:()=>{S.marcusPath='defensive';S.david=Math.min(S.david+1,3)}},
+{t:'D)  Listening: "Before I say anything - what is the biggest bottleneck you personally deal with?"',n:'day1_d',a:()=>{S.marcusPath='open';S.priya=Math.min(S.priya+1,3)}}
+]};
+
+P.day1_a={lbl:'Day 1 - Immediate Feedback',ttl:'The Room Shifts',sub:'Authority play - how it landed',day:1,
+content:()=>`
+<p class="scene">Sarah nods - she appreciates boldness. Marcus's jaw tightens. He built this engineering team from nothing. James glances at Marcus and makes a calculation.</p>
+<div class="fb"><div class="fb-h">Leverage Used - Might + Claimed Ethos</div>
+<p>Authority plays signal confidence but trigger defensiveness in people protecting their domain. Marcus controls the largest team. You have made his cooperation harder to earn before the first real conversation. <strong>The minimum necessary rule applies here.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Defensive. Path will be harder.</div><div class="ri">Sarah: Interested. Appreciates directness.</div><div class="ri">Priya: Watching. Reserves judgment.</div></div>`,
+choices:[{t:'Continue to Day 3',n:()=>S.marcusPath==='defensive'?'day3_marcus_d':'day3_marcus_o',resolve:true}]};
+
+P.day1_b={lbl:'Day 1 - Immediate Feedback',ttl:'The Tension Releases',sub:'Collaborative play - how it landed',day:1,
+content:()=>`
+<p class="scene">Marcus uncrosses his arms. Sarah smiles. Priya makes brief eye contact. James nods but keeps his distance. The read-as-threat response did not fire.</p>
+<div class="fb"><div class="fb-h">Leverage Used - Allocentrism + Pathos</div>
+<p>Positioning as a collaborator rather than a fixer reduces threat perception immediately. Marcus is still skeptical - that is his baseline - but he is not defensive. <strong>That is a meaningful difference when you sit down with him on Day 3.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Cautiously open. Will listen.</div><div class="ri">Sarah: Engaged. Sees a potential partner.</div><div class="ri">Priya: Interested. You passed the first screen.</div></div>`,
+choices:[{t:'Continue to Day 3',n:'day3_marcus_o'}]};
+
+P.day1_c={lbl:'Day 1 - Immediate Feedback',ttl:'Mixed Signals',sub:'Data play - how it landed',day:1,
+content:()=>`
+<p class="scene">David Torres looks up from his phone for the first time and makes a quiet note of you. Marcus looks skeptical - he has heard consultants with data before. James is unimpressed. Sarah wants to know if your data matches what she already knows.</p>
+<div class="fb"><div class="fb-h">Leverage Used - Logos + Ethos</div>
+<p>Data-first positioning earns David. But leading with data before relationships signals you will optimize for being right over being trusted. Marcus has seen this before. <strong>Net: one early ally, one harder path.</strong></p></div>
+<div class="ru"><div class="ri">David: Interested. You speak his language. (+1 early)</div><div class="ri">Marcus: Skeptical baseline locked in.</div><div class="ri">Sarah: Curious. Will compare your data to hers.</div></div>`,
+choices:[{t:'Continue to Day 3',n:'day3_marcus_d'}]};
+
+P.day1_d={lbl:'Day 1 - Immediate Feedback',ttl:'The Room Opens Up',sub:'Listening play - how it landed',day:1,
+content:()=>`
+<p class="scene">Surprise. Consultants do not usually ask questions at their own introduction. Priya speaks first about handoff delays. James mentions missed client dates. Sarah raises resource opacity. Marcus says nothing but you catch him registering what his team reveals when they think they are not being evaluated.</p>
+<div class="fb"><div class="fb-h">Leverage Used - Allocentrism + Situation Awareness + Team-building</div>
+<p>Listening before speaking is rare and disarming. You learned more in three minutes than a week of interviews might have given you. Priya showed you exactly where the pain is. Marcus saw his team speak freely around you. <strong>That registers differently than anything you could have said about yourself.</strong></p></div>
+<div class="ru"><div class="ri">Priya: Early ally. She spoke, you listened. (+1 early)</div><div class="ri">Marcus: Respects the method. Cautiously open.</div><div class="ri">James: Small trust signal - disclosed something unprompted.</div></div>`,
+choices:[{t:'Continue to Day 3',n:'day3_marcus_o'}]};
+
+P.day3_marcus_d={lbl:'Day 3 - Tuesday Afternoon',ttl:'Marcus',sub:'VP Engineering - defensive. Three monitors. He does not stand.',day:3,
+content:()=>`
+<p class="scene">The door is open but the posture is closed. Marcus gestures to the chair across from his desk without looking up from his screen.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"Consultant. Right. My read: the structure works. We do not ship as fast as the business wants but that is because product does not know what it wants and sales overpromises. Not an engineering problem."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"So the problem is not engineering."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"The problem is everyone else not respecting that shipping takes time. But you will hear that engineering is slow. That narrative is wrong."</span></div>
+</div>
+<p class="cpmt">How do you respond?</p>`,
+choices:[
+{t:'A)  Push back with data: "The numbers actually show handoff delays, not engineering slowness."',n:'marc_data',a:()=>{S.marcus=Math.max(S.marcus,1)}},
+{t:'B)  Acknowledge and redirect: "I hear you. If engineering is not the bottleneck, what would actually fix things?"',n:'marc_ack',a:()=>{S.marcus=Math.max(S.marcus,2)}}
+]};
+
+P.day3_marcus_o={lbl:'Day 3 - Tuesday Afternoon',ttl:'Marcus',sub:'VP Engineering - guarded but willing. There is a small difference.',day:3,
+content:()=>`
+<p class="scene">Three monitors. Code on all of them. Marcus leans back slightly when you sit. Not warm - but not closed. You notice the distinction and file it.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"Alex respects your background. So I am listening. What I can tell you is that the problem is not engineering standards - it is decision-making clarity. When product changes direction mid-sprint, we eat the cost. Smaller teams owning their full domain would fix that. But I am skeptical of the trendy squad model. What I care about is whether technical standards survive."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Tell me more about that concern."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"Right now I can maintain quality because I see everything. In a squad model, each squad goes its own way. That is how you get technical debt."</span></div>
+</div>
+<p class="cpmt">How do you respond to his concern about standards?</p>`,
+choices:[
+{t:'A)  Reframe his role: "In a squad model you become the technical standards authority across all squads - guardian, not manager of daily work."',n:'marc_bigger',a:()=>{S.marcus=Math.max(S.marcus,2)}},
+{t:'B)  Ask what would convince him: "What would you need to see to feel confident standards survive?"',n:'marc_real',a:()=>{S.marcus=Math.max(S.marcus,3)}}
+]};
+
+P.marc_data={lbl:'Day 3 - Result',ttl:'Marcus: Data Push',sub:'How he responded',day:3,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"The numbers show handoff delays, not engineering slowness. Average time from spec-complete to engineering start is eleven days."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"That is a fair point. Send me the methodology. I will look at it. But I am not changing my position on a summary."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Logos</div>
+<p>Data moved him slightly - he is willing to look. But you did not connect to what he actually cares about: autonomy, technical excellence, his team's identity. <strong>Logos is necessary but not sufficient with Marcus.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Level 1 - Willing to review data. Not yet an ally.</div></div>`,
+choices:[{t:'Continue to Day 5 - Sarah',n:'day5_sarah'}]};
+
+P.marc_ack={lbl:'Day 3 - Result',ttl:'Marcus: Autonomy Unlocked',sub:'How he responded',day:3,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"If engineering is not the problem, what would actually fix the slowness?"</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"Cleaner handoffs. Product commits before we start. Smaller autonomous teams owning their domain end-to-end. Maybe squads. But only if we do not lose technical standards."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"What would protect standards while giving squads autonomy?"</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"If I set technical direction across squads rather than managing daily work. Shift from oversight to governance."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Allocentrism + Autonomy</div>
+<p>You asked Marcus to solve his own problem. He arrived at squads independently. People internalize ideas they generate themselves - this is the Autonomy principle. <strong>Marcus just designed part of your proposal without knowing it.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Level 2 - Softening. He is building with you now.</div></div>`,
+choices:[{t:'Continue to Day 5 - Sarah',n:'day5_sarah'}]};
+
+P.marc_bigger={lbl:'Day 3 - Result',ttl:'Marcus: Reframe',sub:'How he responded',day:3,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"In a squad model you become the technical standards authority across all squads. You would be the foundation, not the ceiling. Different constraints, broader impact."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"That is a nice way to frame a demotion."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"If squads respect the standards, you are more influential. If they ignore you, you are powerless. Which means the design has to make standards load-bearing, not advisory."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"...Come back with a draft. I will tell you what is wrong with it."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Loss Aversion Reframing</div>
+<p>You shifted the reference point from "you lose control" to "you gain different power." Loss aversion working for you, not against you. Marcus is engaged and wants to design the standards layer. <strong>Investment without full commitment yet.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Level 2 - Engaged. Skeptical but invested in design.</div></div>`,
+choices:[{t:'Continue to Day 5 - Sarah',n:'day5_sarah'}]};
+
+P.marc_real={lbl:'Day 3 - Breakthrough',ttl:'Marcus: The Real Concern',sub:'Something shifted',day:3,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"What would you need to see to feel confident standards survive a restructure?"</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt"><em>[Pause]</em> "That is actually the right question."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"My real concern is not about control. It is what happens when Squad B takes a shortcut that breaks Squad A's infrastructure three months later. Right now I catch those. In a squad model, I do not."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"So you need cross-squad technical visibility. Shared infrastructure as a protected layer."</span></div>
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"Exactly. Squads own their features but build on a shared foundation. If someone touches the foundation, I know. That is actually more achievable with squads than without - right now everyone touches everything. Come back with a proposal that treats architecture as shared property. If you can do that, I might support this."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Breakthrough - Allocentrism + Autonomy + Logos</div>
+<p>Asking what he needed rather than pitching broke through his defensive posture. He revealed his real concern - technical integrity, not power. You showed squad structure actually solves it. He is now co-designing the solution. <strong>People invested in a design do not fight against it at the final meeting.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Level 3 - Potential strong ally. He is building with you now.</div></div>`,
+choices:[{t:'Continue to Day 5 - Sarah',n:'day5_sarah'}]};
+
+P.day5_sarah={lbl:'Day 5 - Thursday Afternoon',ttl:'Sarah',sub:'Head of Operations - she has been waiting two years for this conversation',day:5,
+content:()=>`
+<p class="scene">Organized like someone solving the same problem for a long time with the documentation to prove it. Whiteboards. Annotated org charts. Three proposals she has drafted, redrafted, and never been given the chance to present.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt">"I have been waiting for this conversation for two years. Cross-functional squads. Each owns their domain end-to-end. I have modeled it. I know it works. But every time I bring it up it gets filed away. I need someone to make the case that the risk of staying is worse than the risk of changing - and I need to be part of the design. Not advisory. If this happens, I need to be credited for it."</span></div>
+</div>
+<p class="cpmt">How do you position Sarah in the restructure?</p>`,
+choices:[
+{t:'A)  Co-architect: "Your expertise is exactly what makes this work. You are not an advisor - you are the designer. We build this together."',n:'sarah_a',a:()=>{S.sarah=3}},
+{t:'B)  Use her plan: "You have been building this for two years. I will validate and present your proposal."',n:'sarah_b',a:()=>{S.sarah=2}},
+{t:'C)  Minimize: "Operations will play a supporting role. This needs to be product-led, not process-led."',n:'sarah_c',a:()=>{S.sarah=1}}
+]};
+
+P.sarah_a={lbl:'Day 5 - Result',ttl:'Sarah: Co-Architect',sub:'How she responded',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Your process expertise is what makes this work. You are not an advisor - you are the designer. We build it together."</span></div>
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt">"That is what I needed to hear. I have been waiting for a partner, not a presenter. My role in the new structure: process consistency across squads. Each squad gets autonomy over delivery but uses the same operational framework. I define the framework. I am the reason squads can function at scale."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Load-bearing, not advisory."</span></div>
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt">"Exactly. When do we start?"</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Fairness + Reciprocity + Team-building</div>
+<p>Genuine co-ownership activated two years of preparation. This is team-building: you did not just get buy-in, you created a committed partner with skin in the game. <strong>She will not just support the proposal - she will fight for it. At Day 14, that distinction matters.</strong></p></div>
+<div class="ru"><div class="ri">Sarah: Level 3 - Strong ally. She is fighting for this, not merely supporting it.</div></div>`,
+choices:[{t:'Continue to Day 5 - James',n:'day5_james'}]};
+
+P.sarah_b={lbl:'Day 5 - Result',ttl:'Sarah: Grateful but Watching',sub:'How she responded',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"You have been building this for two years. I will validate and present your proposal."</span></div>
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt">"That is better than I expected. But if this proposal goes forward and it becomes your proposal instead of ours - if I am not clearly part of the design - that is a problem. I have seen that happen before."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Exchange (partial)</div>
+<p>Taking her plan shows respect for her work. But you positioned yourself as validator and presenter - credit flows to you. She noticed. <strong>This is an alliance, not a partnership. Alliances fracture under pressure.</strong></p></div>
+<div class="ru"><div class="ri">Sarah: Level 2 - Grateful and cautiously supportive. Watching for credit.</div></div>`,
+choices:[{t:'Continue to Day 5 - James',n:'day5_james'}]};
+
+P.sarah_c={lbl:'Day 5 - Result',ttl:'Sarah: Quietly Closed',sub:'How she responded',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Operations will play a supporting role. This needs to be product-led."</span></div>
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt"><em>[A pause that lasts a beat too long.]</em> "I see. I have been working on this for two years and you have been here five days. I hope your proposal is as strong as you think it is."</span></div>
+</div>
+<div class="fb"><div class="fb-h">What Went Wrong - Fairness Violation + Autonomy Dismissal</div>
+<p>You discounted her expertise and ignored her need for recognition. She will not sabotage you - she is too professional. But she will not advocate for you either. <strong>Inaction when she could help is a deliberate choice. You just made the next nine days harder.</strong></p></div>
+<div class="ru"><div class="ri">Sarah: Level 1 - Quietly disengaged. You lost a strong ally before you had her.</div></div>`,
+choices:[{t:'Continue to Day 5 - James',n:'day5_james'}]};
+
+P.day5_james={lbl:'Day 5 - Thursday, Later',ttl:'James',sub:'Head of Sales - conference room, thirty-minute window',day:5,
+content:()=>`
+<p class="scene">James brings coffee and checks his calendar twice before sitting. Pleasant but evaluating. Sales instincts - he has already assessed your threat level and is deciding whether you are useful or irrelevant.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"Quick version: I need to tell clients what is coming and have engineering deliver it on time. That is hit or miss right now. If restructure fixes it, I am interested. If it gives me more chaos, I am not. The core problem is nobody owns the full outcome - I go to product, they say one thing, I go to engineering, they say another."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"In a squad model, I trade direct access to engineering leadership for embedded squad relationships. I do not know if that trade makes sense."</span></div>
+</div>
+<p class="cpmt">How do you address James's concern?</p>`,
+choices:[
+{t:'A)  Show the concrete benefit: "You would have a dedicated contact in each squad - better than ad-hoc access to a whole department."',n:'james_a',a:()=>{S.james=Math.max(S.james,2)}},
+{t:'B)  Name his fear directly: "You are worried about losing leverage. That is real. Let us figure out how to preserve it inside the new structure."',n:'james_b',a:()=>{S.james=Math.max(S.james,3)}},
+{t:'C)  Lead with client data: "Faster shipping means fewer late deliveries and fewer difficult client calls."',n:'james_c',a:()=>{S.james=Math.max(S.james,1)}}
+]};
+
+P.james_a={lbl:'Day 5 - Result',ttl:'James: Cautiously Supportive',sub:'How he responded',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"You would have a dedicated contact in each squad. A relationship with a specific team that owns your clients' features - not a dependency on a whole department."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"Better than what we have. But I need a clear escalation path if something goes wrong. Squad lead, functional head, leadership. In that order."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"That is designable."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"I will believe it when I see it in writing."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Logos + Exchange (implicit)</div>
+<p>You showed him the concrete trade. He accepted the logic but did not feel heard on the deeper concern: influence. He is cautiously supportive but not invested. <strong>If something goes wrong, he will be the first to say he warned you.</strong></p></div>
+<div class="ru"><div class="ri">James: Level 2 - Cautiously supportive. Not invested in the outcome.</div></div>`,
+choices:[{t:'Continue to Day 6 - Priya',n:'day6_priya'}]};
+
+P.james_b={lbl:'Day 5 - Result',ttl:'James: Co-Designer',sub:'How he responded - something shifted',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"You are worried about losing leverage. That is a real concern - not an irrational one. Let us figure out how to preserve it inside the new structure."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt"><em>[Pause]</em> "Nobody has said that to me yet. Everyone else told me I was wrong to worry."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Your leverage is real and it matters to the company too. So how do we design this so sales has what it needs?"</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"Sales embed in each squad. Clear escalation path - a name, not a department. Consultation on squad composition for the accounts I manage."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"All designable. Can I put your name on the sales integration design as co-author?"</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"If I am designing it, I will support it."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Allocentrism + Autonomy + Fairness + Exchange</div>
+<p>You acknowledged his fear, asked him to solve his own problem, gave him co-ownership, and offered credit. Four moves. He is now designing his own integration. <strong>He will advocate for this proposal because he wrote part of it. Exchange done with care is not manipulation - it is genuine mutual investment.</strong></p></div>
+<div class="ru"><div class="ri">James: Level 3 - Co-designer. Committed ally.</div></div>`,
+choices:[{t:'Continue to Day 6 - Priya',n:'day6_priya'}]};
+
+P.james_c={lbl:'Day 5 - Result',ttl:'James: Unmoved',sub:'How he responded',day:5,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Faster shipping means fewer late deliveries. Companies that moved to squads improved by thirty-five percent on average."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"Interesting but that is not my concern. My concern is who I call when something goes wrong. Data does not tell me that. Come back with the actual org design and I will tell you if it works for sales."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Missed - James Does Not Respond to Logos Alone</div>
+<p>James operates on trust and territory. Data tells him restructure might work in general - it does not tell him it works for him. <strong>You answered the wrong question. He is neutral and will stay that way.</strong></p></div>
+<div class="ru"><div class="ri">James: Level 1 - Neutral. Wants specifics you did not give him.</div></div>`,
+choices:[{t:'Continue to Day 6 - Priya',n:'day6_priya'}]};
+
+P.day6_priya={lbl:'Day 6 - Friday Morning',ttl:'Priya',sub:'Senior Engineer - coffee off-campus. She suggested it.',day:6,
+content:()=>`
+<p class="scene">Off-site means she does not want this tracked. She orders a cortado and gets to it immediately.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"Engineering is nervous. Marcus is protective. But a subset actually want more ownership - they are tired of building things they do not understand the purpose of. I bridge engineering and product informally already. If squads formalize that, I might actually own something instead of just translating between people."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"But I am not going to advocate for something I do not fully believe in."</span></div>
+</div>
+<p class="cpmt">How do you engage Priya's commitment?</p>`,
+choices:[
+{t:'A)  Give her real responsibility: "Lead the technical design of the squad architecture. If you design it, engineering will trust it."',n:'priya_a',a:()=>{S.priya=3}},
+{t:'B)  Ask her to stress-test it: "Before I present to anyone, I want you to tear this apart. Find every flaw."',n:'priya_b',a:()=>{S.priya=3}},
+{t:'C)  Listen deeply: "Tell me everything engineering is worried about. I want to address the real concerns."',n:'priya_c',a:()=>{S.priya=Math.max(S.priya,2)}}
+]};
+
+P.priya_a={lbl:'Day 6 - Result',ttl:'Priya: Fully In',sub:'How she responded',day:6,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Lead the technical design of the squad architecture. If you design it, engineering will trust it."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"You are asking me to do real work, not just review yours."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I am asking you to own the most important piece of this."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"I will tell Marcus what I am doing. I am not going behind his back."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I would expect nothing less."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"Then yes. I am in."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Autonomy + Team-building + Networks</div>
+<p>Real ownership, not advisory status. She will tell Marcus - which means Marcus hears about this from someone he trusts, not from you. <strong>This is network leverage: building through Priya's relationships, not just your own. Power without title, activated deliberately.</strong></p></div>
+<div class="ru"><div class="ri">Priya: Level 3 - Co-designer. Your bridge to engineering.</div></div>`,
+choices:[{t:'Continue to Day 7 - David',n:'day7_david'}]};
+
+P.priya_b={lbl:'Day 6 - Result',ttl:'Priya: Invested Critic',sub:'How she responded',day:6,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Before I present to anyone, I want you to tear this apart. Find every flaw."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"Most consultants want validation, not critique."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Most consultants are not trying to actually change how this company works."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt"><em>[Smiles]</em> "Send me the draft. I will schedule time."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Ethos + Reciprocity + Team-building</div>
+<p>Inviting critique signals genuine confidence. You cannot critique something without thinking about how to fix it - Priya is now a problem-solver for your proposal, not a reviewer. <strong>She will advocate for something she helped build, not something she was asked to approve.</strong></p></div>
+<div class="ru"><div class="ri">Priya: Level 3 - Invested critic. Your best internal advocate.</div></div>`,
+choices:[{t:'Continue to Day 7 - David',n:'day7_david'}]};
+
+P.priya_c={lbl:'Day 6 - Result',ttl:'Priya: Supportive but Passive',sub:'How she responded',day:6,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Tell me everything engineering is worried about."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"Reporting lines. Technical standards. Career paths in a squad model - am I still an engineer or a squad contributor? Who decides my promotion? And some people will resist regardless. They will find reasons."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"That is helpful. Thank you."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"If your proposal addresses those things, I will not fight it. Might even say something positive to the team."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Allocentrism, but stopped short</div>
+<p>Good intelligence. But you did not give Priya anything to do with it. <strong>There is a meaningful difference between "will not fight it" and "will advocate for it." You have the former. With more investment, you could have had the latter.</strong></p></div>
+<div class="ru"><div class="ri">Priya: Level 2 - Supportive but passive. Intel source, not advocate.</div></div>`,
+choices:[{t:'Continue to Day 7 - David',n:'day7_david'}]};
+
+P.day7_david={lbl:'Day 7 - Monday Morning',ttl:'David',sub:'Finance right-hand - the most organized office in the building',day:7,
+content:()=>`
+<p class="scene">Every document labeled. Every chart sourced. He has time set aside but is visibly mid-something. He will be efficient.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"Reorganizing existing people costs very little. ROI comes from shipping faster. That is the financial case. What concerns me is transition risk - six weeks of productivity dip while people find their new relationships. You are betting on future speed to justify present disruption. Reasonable bet, but I need it modeled, not assumed."</span></div>
+</div>
+<p class="cpmt">How do you respond?</p>`,
+choices:[
+{t:'A)  Present your model: "I have built a financial model showing velocity gains versus transition cost."',n:'david_a',a:()=>{S.david=Math.max(S.david,2)}},
+{t:'B)  Ask his threshold: "What would an acceptable transition risk model look like to you? What would make you say yes?"',n:'david_b',a:()=>{S.david=Math.max(S.david,3)}},
+{t:'C)  Give him ownership: "I want you to design the transition risk framework. Metrics, milestones, kill switch - all yours."',n:'david_c',a:()=>{S.david=Math.max(S.david,3)}}
+]};
+
+P.david_a={lbl:'Day 7 - Result',ttl:'David: Conditional Support',sub:'How he responded',day:7,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Six weeks of dip, recovered by month four, net positive from month five. I will send the model."</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"Send it. If the methodology holds, I do not have grounds to block it. But do not promise month five if you are not certain. I will remember."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Logos + Ethos</div>
+<p>Data worked. David will validate and likely not block. But you did not give him ownership - he is a gatekeeper who might say yes, not a stakeholder who wants this to succeed. <strong>At Day 14 that distinction shows.</strong></p></div>
+<div class="ru"><div class="ri">David: Level 2 - Will not block if model holds. Not invested in success.</div></div>`,
+choices:[{t:'Continue to Day 8',n:'day8_trans'}]};
+
+P.david_b={lbl:'Day 7 - Result',ttl:'David: Requirements Unlocked',sub:'How he responded',day:7,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"What would an acceptable transition risk model look like to you? What would make you say yes?"</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"That is the right question. Staged rollout - two squads first, measure, then expand. Clear metrics before we start, not after. And a kill switch: if metrics are not met by week twelve, explicit decision process to pause."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I can design all of that into the proposal."</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"Then I will support it. The risk is not the restructure - it is doing it without checkpoints."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Autonomy + Allocentrism + Fairness</div>
+<p>You asked David to define success on his terms. He gave you three specific, designable requirements. More importantly, he told you exactly what he needs to say yes. <strong>At Day 14, he will speak to the process rigor because he designed it.</strong></p></div>
+<div class="ru"><div class="ri">David: Level 3 - Co-designer of risk framework. Will advocate for rigor.</div></div>`,
+choices:[{t:'Continue to Day 8',n:'day8_trans'}]};
+
+P.david_c={lbl:'Day 7 - Result',ttl:'David: Owner',sub:'How he responded',day:7,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I want you to own the transition risk framework. You design the metrics, the milestones, the kill switch. Finance should not feel comfortable with the risk design - finance should build it."</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt"><em>[Pause]</em> "If I build the risk framework, I am invested in making it work. You understand that?"</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"That is the idea."</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"Alright. I will have something to you by Wednesday."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Autonomy + Exchange + Team-building</div>
+<p>You gave David genuine ownership of something important. He will build a rigorous framework because it is his framework. <strong>At the final meeting, he will not be defending your proposal - he will be defending his risk design. Fundamentally different posture.</strong></p></div>
+<div class="ru"><div class="ri">David: Level 3 - Owner of risk framework. Invested in project success.</div></div>`,
+choices:[{t:'Continue to Day 8',n:'day8_trans'}]};
+
+P.day8_trans={lbl:'Day 8 - Tuesday Morning',ttl:'A Message Arrives',sub:'Your Slack lights up',day:8,
+content:()=>{
+const warned=S.priya>=2;
+return `
+<p class="scene">You are at your desk reviewing notes when a message comes in.</p>
+${warned?`
+<div class="slack"><div class="slack-h">Priya Gupta - Direct Message</div>
+<p>"Hey. FYI - James told Marcus that he thinks you are pushing restructure to look good on your resume. Said consultants always push the trendy solution regardless of fit. Marcus is skeptical of everything anyway, but James got in his ear. Thought you should know."</p>
+</div>
+<p class="scene">You stare at the message. This is what you get for investing in Priya - she is watching out for you. Now you decide what to do with the information.</p>`
+:`
+<div class="slack"><div class="slack-h">Alex Chen - Direct Message</div>
+<p>"Heads up - I heard through the grapevine that James has some concerns about the proposal. Something about consultant motivations. Might be worth addressing before it reaches Marcus."</p>
+</div>
+<p class="scene">The warning is vague because your intelligence network is thin. You know something is off, but not the full picture.</p>`}
+<p class="cpmt">How do you respond?</p>`},
+choices:[
+{t:'A)  Confront James directly: address it face to face.',n:'day8_a',a:()=>{S.james=Math.min(S.james+1,3)}},
+{t:'B)  Ignore it: let the proposal speak for itself.',n:'day8_b',a:()=>{S.marcus=Math.max(S.marcus-1,1)}},
+{t:'C)  Use Priya: ask her to clarify your intent with engineering.',n:'day8_c',a:()=>{S.priya=Math.min(S.priya+1,3)}},
+{t:'D)  Strengthen the case: build an even more rigorous proposal.',n:'day8_d',a:()=>{S.david=Math.min(S.david+1,3)}}
+]};
+
+P.day8_a={lbl:'Day 8 - Confrontation',ttl:'You Address James Directly',sub:'Face to face',day:8,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I heard you told Marcus I am pushing restructure to look good on my resume. I want to address that directly."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt"><em>[Defensive]</em> "I said I am skeptical that a consultant's recommendation always matches what is best for the company."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Fair skepticism. But route your concerns to me, not through Marcus. Right now you are mixing 'I do not trust the consultant' with 'I have real concerns about restructure.' Those are two different problems."</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"You are right. I should have come to you first. My real concern: if this goes wrong, you will be gone. I will be here managing client relationships through chaos."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"That is the most honest thing you have said to me. Let us design the sales integration so that if something goes wrong, you have the tools to manage it."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Might (minimal) + Fairness + Allocentrism</div>
+<p>Confronting directly signals boundaries and respect simultaneously. You did not attack James - you named the behavior and redirected toward the real concern. This is Tit-for-Tat: respond to the defection, immediately offer cooperation. <strong>James respects directness.</strong></p></div>
+<div class="ru"><div class="ri">James: Improved. Direct conversation built respect.</div></div>`,
+choices:[{t:'Continue to Day 13',n:'day9_night'}]};
+
+P.day8_b={lbl:'Day 8 - You Ignore It',ttl:'Silence',sub:'Choosing not to respond',day:8,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU (internal)</span><span class="dt">The proposal is strong. The relationships are built. James's concern will evaporate when the final presentation lands. Focus on the work.</span></div>
+</div>
+<p class="scene">Three days later, Marcus is shorter in his email responses. He has your model on his desk but has not followed up. Priya mentions that engineering has some concerns she has been hearing. Not deal-breakers. But not endorsements.</p>
+<div class="fb"><div class="fb-h">What Happened - Silence Signals Weakness</div>
+<p>Not responding to a political challenge does not make it disappear - it lets it settle. Marcus heard James's concern and you gave him nothing to counter it with. <strong>He is not convinced you are self-serving, but he is less convinced you are trustworthy. The difference matters at Day 14.</strong></p></div>
+<div class="ru"><div class="ri">Marcus: Slightly less confident in you. No counter-narrative given.</div></div>`,
+choices:[{t:'Continue to Day 13',n:'day9_night'}]};
+
+P.day8_c={lbl:'Day 8 - Network Counter',ttl:'Working Through Priya',sub:'Using your network',day:8,
+content:()=>`
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Can you help me with something? If Marcus or anyone in engineering asks why I am really here - can you speak to what you have actually seen?"</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"I can speak to what I have seen. You have been asking real questions, not validating a pre-baked answer. That is unusual for a consultant."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"That is all I need. Just tell what is true."</span></div>
+<div class="dl"><span class="spk s-priya">PRIYA</span><span class="dt">"I can do that. And for what it is worth - James is worried about his own position, not yours. He will come around if the sales design is solid."</span></div>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Networks + Reciprocity + Situation Awareness</div>
+<p>Priya's word carries more weight with engineering than yours does - she is internal, trusted, and has nothing to gain from defending you except the truth. <strong>This is structural leverage: using someone else's credibility to reinforce yours where yours is limited. This is Granovetter's weak ties at work.</strong></p></div>
+<div class="ru"><div class="ri">Priya: Even more invested - she is actively defending you now.</div><div class="ri">Engineering: Word is spreading organically. Skepticism reduced.</div></div>`,
+choices:[{t:'Continue to Day 13',n:'day9_night'}]};
+
+P.day8_d={lbl:'Day 8 - Strengthen the Case',ttl:'Better Data',sub:'Doubling down on the proposal',day:8,
+content:()=>`
+<p class="scene">You spend the next two days expanding the financial model and adding a detailed case study from a comparable fintech. You send David an upgraded version. He responds within an hour.</p>
+<div class="slack"><div class="slack-h">David Torres - Email</div>
+<p>"This is solid. I will add the risk framework and we will have something worth presenting."</p>
+</div>
+<div class="fb"><div class="fb-h">Leverage Used - Logos + Ethos</div>
+<p>A stronger proposal is never wrong. David is more confident. But you addressed the wrong problem - James's concern was about trust and territory, not proposal quality. <strong>A better deck does not fix a relationship concern. At Day 14, the proposal is stronger but the coalition is unchanged.</strong></p></div>
+<div class="ru"><div class="ri">David: More confident in proposal rigor.</div><div class="ri">James: Unchanged. His concern was never about the data.</div></div>`,
+choices:[{t:'Continue to Day 13',n:'day9_night'}]};
+
+P.day9_night={lbl:'Day 13 - Evening',ttl:'The Night Before',sub:'Alex calls',day:13,
+content:()=>`
+<p class="scene">Your phone buzzes at 9 PM. Alex.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-alex">ALEX</span><span class="dt">"Tomorrow is the meeting. How are you feeling?"</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"Prepared. I know what everyone cares about. I designed around their real concerns, not their stated positions."</span></div>
+<div class="dl"><span class="spk s-alex">ALEX</span><span class="dt">"That is the work. Maya will listen to the room. If the room is aligned, she moves. If it is fractured, she waits. You know better than I do which one you built."</span></div>
+</div>
+<p class="scene">You hang up and look at your notes. The relationships built over two weeks. The conversations that went well. The ones that did not. You know what coalition you are walking in with tomorrow. The question is whether it is enough.</p>`,
+choices:[{t:'Go to Day 14 - The Final Meeting',n:'day14_final'}]};
+
+P.day14_final={lbl:'Day 14 - The Final Meeting',ttl:'The Room',sub:'Leadership review - Maya Wong, CEO + full team',day:14,
+content:()=>`
+<p class="scene">Board room. Maya sits at the head. Marcus, Sarah, James, David around the table. Alex against the wall - observing, not presenting. This is your meeting.</p>
+<div class="dlg">
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I spent two weeks talking to each of you individually. Not to sell you something - to understand what actually matters. I heard from Marcus that technical standards and shared infrastructure are load-bearing, not advisory. From Sarah that this organization has been ready for change for two years and that operations needs to be a co-designer, not a support function. From James that sales needs dedicated squad relationships and a clear escalation path. From David that transition risk needs explicit checkpoints, defined metrics, and a kill switch."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"So here is the proposal. Four cross-functional squads. Each owns its product domain end-to-end. Marcus governs technical standards across all squads - the foundation, not the ceiling. Sarah leads the operational framework that enables squads to function consistently. James has a sales embed in each squad and co-designed the escalation structure. David's risk framework includes a six-week review and a twelve-week kill switch. Maya: you get four squad leads who own their outcomes. You stop mediating between functions. You set strategy. They execute."</span></div>
+<div class="dl"><span class="spk s-you">YOU</span><span class="dt">"I did not invent this. But I listened to what matters to you and designed this for your company."</span></div>
+</div>
+<p class="scene"><em>Silence. Maya looks at the room.</em></p>
+<div class="dlg"><div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"Thoughts?"</span></div></div>`,
+choices:[{t:'See how the room responds based on what you built',n:'day14_room'}]};
+
+P.day14_room={lbl:'Day 14 - The Room Responds',ttl:'The Coalition Reveals Itself',sub:'Two weeks of choices, surfacing at once',day:14,
+content:()=>{
+const mResp=S.marcus>=3?`"I helped design the technical architecture of this. The shared infrastructure model addresses my concern about standards. I can support it."`:
+S.marcus>=2?`"The technical governance piece is stronger than I expected. I will give it a chance."`:
+`"I still have concerns about technical consistency that are not fully addressed here. I am not ready to endorse this."`;
+const sResp=S.sarah>=3?`"I have been working toward this for two years. The operational framework is solid. I am committed to making the transition work."`:
+S.sarah>=2?`"The proposal is well-designed. Operations can support this."`:
+`"There are elements of the operational design that were not incorporated. I would want to revisit before this moves forward."`;
+const jResp=S.james>=3?`"Sales helped design the integration model. The squad embed and escalation structure work for us. I am in."`:
+S.james>=2?`"The sales piece makes sense on paper. I will believe it when I see it in practice. Cautiously supportive."`:
+`"I have significant concerns about client relationship continuity that have not been addressed. I cannot support this as designed."`;
+const dResp=S.david>=3?`"The risk framework is rigorous - I built it. The metrics are defined, checkpoints are real, kill switch is enforceable. Financially, this makes sense."`:
+S.david>=2?`"The financial model holds up. I have some parameters I would want included, but I will not block it."`:
+`"I need more detail on the transition plan before I can approve the budget reallocation."`;
+return `<div class="dlg">
+<div class="dl"><span class="spk s-marcus">MARCUS</span><span class="dt">"${mResp}"</span></div>
+<div class="dl"><span class="spk s-sarah">SARAH</span><span class="dt">"${sResp}"</span></div>
+<div class="dl"><span class="spk s-james">JAMES</span><span class="dt">"${jResp}"</span></div>
+<div class="dl"><span class="spk s-david">DAVID</span><span class="dt">"${dResp}"</span></div>
+</div>`;},
+choices:[{t:"See Maya's decision",n:'calc_ending'}]};
+
+P.calc_ending={lbl:'',ttl:'',sub:'',day:14,content:()=>'',choices:[],onEnter:()=>{goto(calcEnding())}};
+
+P.ending_a={lbl:'Day 14 - Outcome',ttl:'Strong Approval',sub:'Full coalition. Job offer extended.',day:14,
+content:()=>`<div class="ending-wrap ea">
+<div class="e-badge">Ending A</div>
+<div class="e-ttl">Strong Approval</div>
+<div class="e-sub">You built the right coalition, the right way.</div>
+<div class="e-body">
+<div class="dlg"><div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"I am going to say yes to this. Not because it is perfect - because you brought me a proposal that actually solves the problem people are describing, not the problem a consultant thinks they should have. Sarah, you own the transition. Marcus, technical standards governance is yours. James, sales integration as designed. David, your risk framework is the operating document. This starts in two weeks."</span></div>
+<div class="dl"><span class="spk s-maya">MAYA</span><span class="dt"><em>[Looking at you]</em> "You did what I brought you in to do. You moved this organization. That is rare. We would like to talk about a permanent role."</span></div></div>
+<p>Six months later: shipping speed up 40%, team satisfaction scores improve, the squad model becomes how the company is described in recruiting materials. Your name is attached to it.</p>
+</div>
+${coalitionReport()}
+${debrief('a')}
+</div>`,
+choices:[{t:'Play again - different choices lead to different endings',n:'start',a:()=>resetState()}]};
+
+P.ending_b={lbl:'Day 14 - Outcome',ttl:'Approval With Conditions',sub:'Partial coalition. Role offered with constraints.',day:14,
+content:()=>`<div class="ending-wrap eb">
+<div class="e-badge">Ending B</div>
+<div class="e-ttl">Approval With Conditions</div>
+<div class="e-sub">The idea was strong enough. The coalition was not.</div>
+<div class="e-body">
+<div class="dlg"><div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"There is enough here to move forward - but not enough alignment for me to give this a full mandate. We will pilot with two squads. Monthly reviews. If metrics move in twelve weeks, we expand. If they do not, we stop and reassess."</span></div>
+<div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"You built something worth trying. Whether you are the person to see it through - that depends on whether the pilot works."</span></div></div>
+<p>The pilot succeeds - slowly. Some resistance continues. The restructure eventually happens, but takes eighteen months instead of six. You receive an offer, contingent on pilot outcomes. It is not the clean win you planned for, but it is a real one.</p>
+</div>
+${coalitionReport()}
+${debrief('b')}
+</div>`,
+choices:[{t:'Play again - try for Ending A',n:'start',a:()=>resetState()}]};
+
+P.ending_c={lbl:'Day 14 - Outcome',ttl:'Delayed Decision',sub:'Weak coalition. No offer.',day:14,
+content:()=>`<div class="ending-wrap ec">
+<div class="e-badge">Ending C</div>
+<div class="e-ttl">Delayed Decision</div>
+<div class="e-sub">You had a good idea. You did not build the infrastructure to get it approved.</div>
+<div class="e-body">
+<div class="dlg"><div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"The concept is interesting. But I am hearing too many open questions from people whose buy-in we would need to make this work. I do not want to mandate a restructure that half the leadership team has not internalized. Let us revisit in two quarters with more alignment."</span></div></div>
+<p>You leave having documented what you learned. Alex thanks you. The restructure gets filed alongside Sarah's two-year-old proposals. The company stays slow. Your engagement ends without an offer.</p>
+<p>The idea was right. The coalition was not built. In organizations, those are not the same thing.</p>
+</div>
+${coalitionReport()}
+${debrief('c')}
+</div>`,
+choices:[{t:'Play again - coalition building starts on Day 1',n:'start',a:()=>resetState()}]};
+
+P.ending_d={lbl:'Day 14 - Outcome',ttl:'Pyrrhic Win',sub:'Approved. But the wrong people are against you.',day:14,
+content:()=>`<div class="ending-wrap ed">
+<div class="e-badge">Ending D</div>
+<div class="e-ttl">Pyrrhic Win</div>
+<div class="e-sub">You won the vote. You did not win the room.</div>
+<div class="e-body">
+<div class="dlg"><div class="dl"><span class="spk s-maya">MAYA</span><span class="dt">"I am going to approve this - the case is compelling and enough people are supportive. But Marcus and James have reservations I cannot ignore entirely. We will move forward with additional oversight."</span></div></div>
+<p>The restructure gets approved. Within six weeks, Marcus's team is finding reasons the shared infrastructure layer is unworkable as designed. James stops attending squad syncs. Two squads are working well. Two are not. The pilot technically continues, but the energy behind it is gone.</p>
+<p>You built a coalition of people who liked you. You did not build a coalition of people with the influence to make it survive contact with resistance. Approval and implementation are two different problems.</p>
+</div>
+${coalitionReport()}
+${debrief('d')}
+</div>`,
+choices:[{t:'Play again - think about who actually has power',n:'start',a:()=>resetState()}]};
+
+function coalitionReport(){
+const rows=[
+['Marcus',S.marcus],['Sarah',S.sarah],['James',S.james],['David',S.david],['Priya',S.priya]
+];
+const lbls=['Not yet','Cautious ally','Strong ally'];
+return `<div class="coal-rpt"><div class="cr-ttl">Your Coalition - End State</div>
+${rows.map(([name,lvl])=>`<div class="cr-row cr-l${lvl}">
+<div class="cr-name">${name}</div>
+<div class="cr-bg"><div class="cr-fill"></div></div>
+<div class="cr-lbl">${lvl===3?'Strong ally':lvl===2?'Cautious ally':'Minimal trust'}</div>
+</div>`).join('')}
+</div>`;
+}
+
+function debrief(e){
+const msgs={
+a:`<div class="debrief"><div class="deb-ttl">What This Ending Teaches</div>
+<p>You practiced the three leverage areas flagged as gaps: Coalitions (you built across departments), Exchange (you gave people co-ownership and credit), Team-building (you invested in one-by-one relationships deliberately). The result was a coalition of people who fought for the proposal, not just people who agreed with it.</p>
+<p>The key moment was discovering that listening first - asking Marcus what he needed, asking James what he feared - was more powerful than pitching. Allocentrism and Pathos are natural strengths. This ending shows what happens when you add Intentionality and Exchange to them.</p>
+</div>`,
+b:`<div class="debrief"><div class="deb-ttl">What This Ending Teaches</div>
+<p>You built some relationships well and left others shallow. Approval happened but resistance remains - which means implementation will be slow and political. The gap between "said yes in the meeting" and "will actively make this work" is where good ideas go to die.</p>
+<p>Coalition quality matters as much as coalition size. Two strong allies who own parts of the design outperform five cautious ones who can be talked back from their position.</p>
+</div>`,
+c:`<div class="debrief"><div class="deb-ttl">What This Ending Teaches</div>
+<p>The proposal was sound. The coalition was not. This is the most common failure mode for smart people: winning the argument without winning the relationships. Maya could not say yes because the room was too fractured - not because the idea was wrong.</p>
+<p>Power and influence accrete incrementally. The visible moment - the Day 14 meeting - is the product of dozens of smaller invisible choices. Day 3 Marcus, Day 5 Sarah, Day 6 Priya. By Day 14 it is already decided.</p>
+</div>`,
+d:`<div class="debrief"><div class="deb-ttl">What This Ending Teaches</div>
+<p>You built a coalition of people who liked you but not the right people. Priya and Sarah supported you - but Sarah does not control implementation, and Priya does not have formal power. Marcus controls engineering. James controls client relationships. Without them internalized, approval is fragile.</p>
+<p>Situation awareness means knowing who actually has power vs. who has a title. Not everyone in the org chart matters equally at the decision that matters to you.</p>
+</div>`
+};
+return msgs[e]||'';
+}
+
+function calcEnding(){
+const strong=[S.marcus>=3,S.sarah>=3,S.james>=3,S.david>=3].filter(Boolean).length;
+const med=[S.marcus>=2,S.sarah>=2,S.james>=2,S.david>=2].filter(Boolean).length;
+if(S.priya>=3&&S.marcus<=1&&S.james<=1&&med<=2)return 'ending_d';
+if(strong>=3)return 'ending_a';
+if(med>=3)return 'ending_b';
+return 'ending_c';
+}
+
+function resetState(){
+S.marcus=1;S.sarah=1;S.james=1;S.priya=1;S.david=1;S.marcusPath='open';S.currentDay=1;
+}
+
+// ─── ENGINE ──────────────────────────────────────────────────────────────────
+function goto(id){
+curId=id;
+const p=P[id];
+if(!p)return;
+if(p.onEnter){p.onEnter();return;}
+if(p.day)S.currentDay=p.day;
+render(p);
+}
+
+function render(p){
+document.getElementById('p-lbl').textContent=p.lbl||'';
+document.getElementById('p-ttl').textContent=p.ttl||'';
+document.getElementById('p-sub').textContent=p.sub||'';
+const c=typeof p.content==='function'?p.content():p.content;
+document.getElementById('p-content').innerHTML=c;
+renderChoices(p.choices||[]);
+updatePill();
+updateProgress();
+window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function renderChoices(choices){
+const el=document.getElementById('choices');
+el.innerHTML=choices.map((ch,i)=>`<button class="cbtn" onclick="handleChoice(${i})">${ch.t}</button>`).join('');
+}
+
+function handleChoice(idx){
+const p=P[curId];
+const ch=p.choices[idx];
+if(ch.a)ch.a();
+const next=typeof ch.n==='function'?ch.n():ch.n;
+goto(next);
+}
+
+function updatePill(){
+document.getElementById('day-pill').textContent=S.currentDay?`Day ${S.currentDay} of 14`:'';
+}
+
+function updateProgress(){
+const pct=S.currentDay?Math.round((S.currentDay/14)*100):7;
+document.getElementById('prog-fill').style.width=pct+'%';
+}
+
+function openModal(id){
+document.getElementById(id).classList.add('open');
+if(id==='rel-modal')renderRelTracker();
+}
+
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+
+function renderRelTracker(){
+const ppl=[
+{n:'Marcus',v:S.marcus,dep:'Engineering'},
+{n:'Sarah',v:S.sarah,dep:'Operations'},
+{n:'James',v:S.james,dep:'Sales'},
+{n:'Priya',v:S.priya,dep:'Engineering (informal)'},
+{n:'David',v:S.david,dep:'Finance'}
+];
+const lbls=['','Minimal trust','Cautious ally','Strong ally'];
+document.getElementById('rel-content').innerHTML=
+`<p style="font-size:.82rem;color:var(--dim);margin-bottom:18px;font-style:italic">Relationship depth with each key player. Depth is built through deliberate investment across multiple conversations - not a single meeting.</p>`+
+ppl.map(p=>`<div class="rt-row rt-l${p.v}">
+<div class="rt-name">${p.n}<span style="display:block;font-size:.66rem;color:var(--faint)">${p.dep}</span></div>
+<div class="rt-bg"><div class="rt-fill"></div></div>
+<div class="rt-lbl">${lbls[p.v]}</div>
+</div>`).join('');
+}
+
+document.addEventListener('click',e=>{
+if(e.target.classList.contains('modal-ov'))e.target.classList.remove('open');
+});
+
+goto('start');
+</script>
+</body>
+</html>
